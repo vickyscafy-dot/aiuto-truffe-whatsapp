@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulazione WhatsApp - Aiuto Truffe</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e5ddd5;
+        }
+
+        .telefono {
+            width: 420px;
+            height: 720px;
+            margin: 30px auto;
+            background-color: #efeae2;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #075e54;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .foto {
+            width: 42px;
+            height: 42px;
+            background-color: #ccc;
+            border-radius: 50%;
+        }
+
+        .nome-contatto {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stato {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .messaggio {
+            max-width: 75%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .ricevuto {
+            background-color: white;
+            align-self: flex-start;
+        }
+
+        .inviato {
+            background-color: #dcf8c6;
+            margin-left: auto;
+        }
+
+        .barra-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f0f0f0;
+            gap: 8px;
+        }
+
+        .barra-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: none;
+            font-size: 15px;
+        }
+
+        .barra-input button {
+            border: none;
+            background-color: #25d366;
+            color: white;
+            border-radius: 20px;
+            padding: 0 15px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .aiuto-box {
+            background-color: #fff3cd;
+            color: #5c4500;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 12px;
+            font-size: 15px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .pericolo {
+            background-color: #f8d7da;
+            color: #7a0000;
+            border-left: 5px solid #dc3545;
+        }
+
+        .sicuro {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border-left: 5px solid #198754;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="telefono">
+
+        <div class="header">
+            <div class="foto"></div>
+            <div>
+                <div class="nome-contatto">Numero sconosciuto</div>
+                <div class="stato">online</div>
+            </div>
+        </div>
+
+        <div class="chat" id="chat">
+            <div class="messaggio ricevuto">
+                Ciao, sono la tua banca. Il tuo conto è bloccato. Clicca subito su questo link per confermare la password.
+            </div>
+        </div>
+
+        <div id="risultato"></div>
+
+        <div class="barra-input">
+            <input type="text" id="messaggioInput" placeholder="Scrivi un messaggio...">
+            <button id="btnInvia">Invia</button>
+            <button id="btnControlla">Controlla</button>
+        </div>
+
+    </div>
+
+    <script>
+        const messaggioInput = document.getElementById("messaggioInput");
+        const btnInvia = document.getElementById("btnInvia");
+        const btnControlla = document.getElementById("btnControlla");
+        const chat = document.getElementById("chat");
+        const risultato = document.getElementById("risultato");
+
+        btnInvia.addEventListener("click", function () {
+            const testo = messaggioInput.value;
+
+            if (testo.trim() === "") {
+                alert("Scrivi un messaggio prima di inviarlo.");
+                return;
+            }
+
+            const nuovoMessaggio = document.createElement("div");
+            nuovoMessaggio.className = "messaggio inviato";
+            nuovoMessaggio.textContent = testo;
+
+            chat.appendChild(nuovoMessaggio);
+            messaggioInput.value = "";
+        });
+
+        btnControlla.addEventListener("click", async function () {
+            const messaggiRicevuti = document.querySelectorAll(".ricevuto");
+            const ultimoMessaggio = messaggiRicevuti[messaggiRicevuti.length - 1].textContent;
+
+            try {
+                const risposta = await fetch("http://localhost:3000/analyze", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: ultimoMessaggio
+                    })
+                });
+
+                const dati = await risposta.json();
+
+                if (dati.riskLevel === "alto") {
+                    risultato.className = "aiuto-box pericolo";
+                    risultato.innerHTML = `
+                        🚨 <strong>ATTENZIONE: POTREBBE ESSERE UNA TRUFFA</strong><br><br>
+                        Non cliccare su nessun link.<br>
+                        Non inserire password, codici o dati della carta.<br>
+                        Non fare pagamenti.<br><br>
+                        <strong>Cosa fare adesso:</strong><br>
+                        Chiama un familiare oppure contatta la banca, Poste o l'ente usando solo numeri ufficiali.
+                    `;
+                } else {
+                    risultato.className = "aiuto-box sicuro";
+                    risultato.innerHTML = `
+                        ✅ <strong>RISCHIO BASSO</strong><br><br>
+                        Non ci sono segnali evidenti di truffa, ma resta prudente.
+                    `;
+                }
+
+            } catch (errore) {
+                risultato.className = "aiuto-box pericolo";
+                risultato.innerHTML = "Errore durante il controllo del messaggio.";
+            }
+        });
+    </script>
+
+</body>
+</html>

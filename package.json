@@ -1,0 +1,24 @@
+{
+  "name": "aiuto-truffe",
+  "version": "1.0.0",
+  "description": "Assistente anti-truffa WhatsApp pensato per persone anziane o con basse competenze digitali.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "keywords": [
+    "anti-truffa",
+    "whatsapp",
+    "anziani",
+    "ai",
+    "ocr"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^6.34.0"
+  }
+}

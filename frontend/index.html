@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Aiuto Truffe</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main class="contenitore">
+        <h1>Aiuto Truffe</h1>
+
+        <p class="descrizione">
+            Manda o scrivi un messaggio sospetto. Il sistema ti aiuta a capire se potrebbe essere una truffa.
+        </p>
+
+        <textarea 
+            id="messaggio" 
+            placeholder="Scrivi qui il messaggio sospetto..."
+        ></textarea>
+
+        <button id="btnVocale">
+            🎤 Detta il messaggio
+        </button>
+
+        <button id="btnAnalizza">
+            Controlla messaggio
+        </button>
+
+        <div id="risultato"></div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

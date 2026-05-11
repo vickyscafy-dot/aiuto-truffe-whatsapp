@@ -1,0 +1,30 @@
+const suspiciousWords = [
+    "clicca",
+    "link",
+    "banca",
+    "conto",
+    "bloccato",
+    "password",
+    "codice",
+    "pagamento",
+    "urgente",
+    "poste",
+    "inps",
+    "pacco",
+    "spedizione",
+    "carta",
+    "verifica",
+    "accesso",
+    "scaduto",
+    "bonifico",
+    "premio",
+    "vinto",
+    "conferma",
+    "aggiorna",
+    "documento",
+    "identità",
+    "sospeso",
+    "sicurezza"
+];
+
+module.exports = suspiciousWords;
